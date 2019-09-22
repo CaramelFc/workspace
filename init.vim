@@ -19,5 +19,7 @@ LoadScript init/init-plugins.vim
 
 LoadScript init/init-keymaps.vim
 
+LoadScript init/init-config-dependence.vim
+
 
 
