@@ -12,7 +12,7 @@ universal_ctags(){
     mkdir -p .third_module/ctags
     git clone https://github.com/universal-ctags/ctags.git ./.third_module/ctags
     cd .third_module/ctags && ./autogen.sh
-    mkdir build && ./configure --prefix=`pwd`"/build"
+    mkdir -p build && ./configure --prefix=`pwd`"/build"
     make
     make install
     cd $current_root_dir
