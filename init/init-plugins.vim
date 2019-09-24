@@ -12,6 +12,7 @@ Plug 'majutsushi/tagbar'
 Plug 'mhinz/vim-startify'
 Plug 'skywind3000/vim-preview'
 Plug 'skywind3000/gutentags_plus'
+Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 "colorscheme is like hybrid
@@ -95,6 +96,8 @@ let g:airline_theme = 'bubblegum'
 "let g:airline_symbols.readonly = '⭤'
 "let g:airline_symbols.linenr = '⭡'
 
+"easy-motion
+nmap <leader><leader>. <Plug>(easymotion-repeat)
 
 "my aucmd
 func HppHeader()
