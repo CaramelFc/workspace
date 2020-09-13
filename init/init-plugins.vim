@@ -29,6 +29,8 @@ let g:ycm_semantic_triggers =  {
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>>'
+
+nnoremap <leader>d :YcmCompleter GoTo<cr>
 "let g:ycm_error_symbol = '✗'
 "let g:ycm_warning_symbol = '⚠'
 
@@ -46,7 +48,7 @@ let g:ctrlp_custom_ignore = {
   \ }
 
 "autoformat config
-let g:formatter_yapf_style = "pep8"
+let g:formatter_yapf_style = "google"
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0

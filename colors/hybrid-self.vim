@@ -451,3 +451,4 @@ let &background = s:style
 " THE SOFTWARE.
 
 " }}}
+LoadScript syntax/base.vim

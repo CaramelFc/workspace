@@ -5,7 +5,7 @@
 "endfunction
 "au BufNewFile *.py exec ":call NewPyHeader()"
 
-" hightlight operator of math	
+" hightlight operator of math
 hi cMathOperator ctermfg=202 cterm=bold
 hi cPointerOperator ctermfg=202 cterm=bold
 hi cLogicOperator ctermfg=202 cterm=bold

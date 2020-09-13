@@ -1,10 +1,5 @@
-
-
-" map { -> {\n}
-inoremap {<CR> {}<ESC>i<ENTER><ESC>O
-
 "" hightlight operator of math
-syn match cMathOperator display "[-+\*\%/=]"
+syn match cMathOperator display "[-+\*\%/=][ =]"
 syn match cPointerOperator display "->\|\.\|\:\:"
 syn match cLogicOperator display "[!<>]=\="
 syn match cLogicOperator display "=="

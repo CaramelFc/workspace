@@ -12,7 +12,7 @@ universal_ctags(){
     mkdir -p .third_module/ctags
     git clone https://github.com/universal-ctags/ctags.git ./.third_module/ctags
     cd .third_module/ctags && ./autogen.sh
-    mkdir -p build && ./configure --prefix=`pwd`"/build"
+    mkdir -p build && ./configure --prefix=~/local
     make
     make install
     cd $current_root_dir
@@ -26,7 +26,7 @@ gtags(){
     mkdir -p .third_module/gtags && cd .third_module/gtags
     wget "http://tamacom.com/global/global-6.6.3.tar.gz"
     tar -xzf global-6.6.3.tar.gz && mkdir -p build
-    cd global-6.6.3 && ./configure --prefix=`pwd`"/../build"
+    cd global-6.6.3 && ./configure --prefix=~/local
     make
     make install
     cd $current_root_dir
@@ -45,4 +45,4 @@ install_helper(){
 }
 
 install_helper universal_ctags
-install_helper gtags
+#install_helper gtags
