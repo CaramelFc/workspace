@@ -13,6 +13,11 @@ Plug 'mhinz/vim-startify'
 Plug 'skywind3000/vim-preview'
 Plug 'skywind3000/gutentags_plus'
 Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-surround'
+Plug 'gcmt/wildfire.vim', {'for': ['cpp', 'cc', 'vim', 'python', 'sh', 'h', 'hpp']}
+Plug 'solarnz/thrift.vim'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
+Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins', 'for':['python']}
 call plug#end()
 
 "colorscheme is like hybrid
@@ -29,6 +34,7 @@ let g:ycm_semantic_triggers =  {
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>>'
+let g:ycm_max_diagnostics_to_display = 0
 
 nnoremap <leader>d :YcmCompleter GoTo<cr>
 "let g:ycm_error_symbol = '✗'
@@ -48,10 +54,11 @@ let g:ctrlp_custom_ignore = {
   \ }
 
 "autoformat config
-let g:formatter_yapf_style = "google"
-let g:autoformat_autoindent = 0
-let g:autoformat_retab = 0
-let g:autoformat_remove_trailing_spaces = 0
+let g:formatters_python = ['black']
+"let g:formatter_yapf_style = "google"
+"let g:autoformat_autoindent = 0
+"let g:autoformat_retab = 0
+"let g:autoformat_remove_trailing_spaces = 0
 
 "gutentags config
 let g:gutentags_modules = []
@@ -70,6 +77,7 @@ let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
 let g:gutentags_auto_add_gtags_cscope = 0
+let g:gutentags_define_advanced_commands = 1
 
 if !isdirectory(s:vim_tags)
 silent! call mkdir(s:vim_tags, 'p')
@@ -118,6 +126,6 @@ endfunc
 
 au BufNewFile *.h :call HppHeader()
 au BufNewFile *.py call NewPyHeader()
-au VimLeave *.py :call ModeExec(expand("%:p"))
-au VimLeave *.sh :call ModeExec(expand("%:p"))
+"au VimLeave *.py :call ModeExec(expand("%:p"))
+"au VimLeave *.sh :call ModeExec(expand("%:p"))
 au BufWritePre * %s/\s\+$//e

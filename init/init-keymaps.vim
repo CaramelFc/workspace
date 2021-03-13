@@ -6,8 +6,6 @@ vnoremap J j
 vnoremap K k
 vnoremap L l
 vnoremap H h
-nnoremap 8 20j
-nnoremap 9 20k
 vnoremap <C-c> "*y
 nnoremap <C-c> "*yy
 nnoremap <C-v> <Esc>"*p
@@ -22,10 +20,6 @@ vnoremap yga <S-$>"*y
 vnoremap xga <S-$>"*x
 
 vnoremap     <leader>cc  <S-$><Plug>NERDCommenterComment
-vnoremap     <c-_> <leader>cc
-nnoremap     <c-_> <leader>cc
-vnoremap     <c-k> <leader>cu
-nnoremap     <c-k> <leader>cu
 nnoremap     <leader>fm :Autoformat<CR>
 nnoremap     \q :tabc!<CR>
 nnoremap     <c-n> :tabnew

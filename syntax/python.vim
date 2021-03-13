@@ -18,6 +18,14 @@ syn match cLogicOperator display "=="
 syn match cBinaryOperator display "\(&\||\|\^\|<<\|>>\)=\="
 syn match cBinaryOperator display "\~"
 
-" highlight functions
+function MyCustomHighlights()
+    hi semshiGlobal      ctermfg=80
+    hi semshiBuiltin     ctermfg=212
+    hi semshiSelected    ctermfg=255, ctermbg=0
+    hi semshiSelf        ctermfg=188
+    hi semshiImported    ctermfg=49, cterm=bold
+    "hi semshiUnresolved  ctermfg=
+endfunction
 syn match cfun "\<[a-zA-Z_][a-zA-Z_0-9]*\>\s*("me=e-1
-hi cfun ctermfg=blue cterm=bold
+hi cfun ctermfg=blue
+autocmd FileType python call MyCustomHighlights()
