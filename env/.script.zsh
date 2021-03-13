@@ -33,6 +33,16 @@ function _del_cpath(){
     _delete_env_var $1 CPATH
 }
 
+function _add_path(){
+    if [ -d $1 ];then
+        _add_env_var $1 PATH
+    fi
+}
+
+function _del_path(){
+    _delete_env_var $1 PATH
+}
+
 function _add_library_path(){
     if [ -d $1 ];then
         _add_env_var $1 LD_LIBRARY_PATH
@@ -46,12 +56,14 @@ function _del_library_path(){
 }
 
 function add_3rdparty(){
+    _add_path $1/bin
     _add_cpath $1/include
     _add_library_path $1/lib
     _add_library_path $1/lib64
 }
 
 function del_3rdparty(){
+    _del_path $1/bin
     _del_cpath $1/include
     _del_library_path $1/lib
     _del_library_path $1/lib64
