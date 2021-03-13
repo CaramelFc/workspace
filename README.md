@@ -41,6 +41,8 @@ git clone https://github.com/universal-ctags/ctags.git ./.third_module/ctags
 ### neovim
 ```shell
 ./config/nvim/init.vim
+pip3 install wheel --user
+python3 setup.py bdist_wheel
 pip3 install pynvim --user
 # handle esc problem ...
 ```
