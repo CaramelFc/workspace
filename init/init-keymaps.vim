@@ -19,7 +19,7 @@ vnoremap xa x
 vnoremap yga <S-$>"*y
 vnoremap xga <S-$>"*x
 
-vnoremap     <leader>cc  <S-$><Plug>NERDCommenterComment
+"vnoremap     <leader>cc  <S-$><Plug>NERDCommenterComment
 nnoremap     <leader>fm :Autoformat<CR>
 nnoremap     \q :tabc!<CR>
 nnoremap     <c-n> :tabnew

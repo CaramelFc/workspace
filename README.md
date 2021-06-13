@@ -26,7 +26,8 @@ git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh
 ### YCM
 
 ```shell
-./install.py --clangd-completer
+./install.py --clangd-completer --go-completer --java-completer
+# java-completer is too weak
 # git submodule update --init
 ```
 

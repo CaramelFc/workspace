@@ -16,9 +16,15 @@ Plug 'easymotion/vim-easymotion'
 Plug 'tpope/vim-surround'
 Plug 'gcmt/wildfire.vim', {'for': ['cpp', 'cc', 'vim', 'python', 'sh', 'h', 'hpp']}
 Plug 'solarnz/thrift.vim'
+Plug 'heavenshell/vim-pydocstring', {'for': ['python']}
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins', 'for':['python']}
 call plug#end()
+
+"pydoc
+let g:pydocstring_doq_path = "doq"
+nmap <silent> <C-_> <Plug>(pydocstring)
+au FileType python nnoremap <leader>cc :Pydocstring<cr>
 
 "colorscheme is like hybrid
 colorscheme hybrid-self
@@ -55,6 +61,8 @@ let g:ctrlp_custom_ignore = {
 
 "autoformat config
 let g:formatters_python = ['black']
+let g:formatdef_prettyjson = '"python3 -m json.tool"'
+let g:formatters_json = ['prettyjson']
 "let g:formatter_yapf_style = "google"
 "let g:autoformat_autoindent = 0
 "let g:autoformat_retab = 0

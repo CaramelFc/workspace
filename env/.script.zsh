@@ -16,7 +16,7 @@ function _delete_env_var(){
     for elem in `echo $param_lists`
     do
         if [ "$elem" != "$1" ];then
-            tmp_var=$elem:$tmp_var
+            tmp_var=$tmp_var:$elem
         fi
     done
     #echo $tmp_var

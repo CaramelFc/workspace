@@ -123,6 +123,7 @@ if ! pgrep -u $USER ssh-agent > /dev/null 2>&1;then
     ssh-agent > ~/.config/ssh-agent-config
 fi
 
+_add_config_zsh env.zsh
 command -v nvim > /dev/null 2>&1 && alias vim=nvim && alias vi=vim
 
 # zsh plugins config
@@ -131,6 +132,6 @@ bindkey -M vicmd 'j' history-substring-search-down
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="bg=none,fg=cyan,bold"
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="bg=none,fg=red,bold"
 
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#808080'
+#export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#808080'
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=60'
 
-_add_config_zsh env.zsh
