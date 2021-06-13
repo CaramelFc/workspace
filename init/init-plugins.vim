@@ -4,19 +4,20 @@ Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle'}
 Plug 'scrooloose/nerdcommenter'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'Chiel92/vim-autoformat'
-Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags', {'for': ['cpp', 'cc', 'h', 'hpp']}
 Plug 'w0ng/vim-hybrid'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'majutsushi/tagbar'
 Plug 'mhinz/vim-startify'
 Plug 'skywind3000/vim-preview'
-Plug 'skywind3000/gutentags_plus'
+Plug 'skywind3000/gutentags_plus', {'for': ['cpp', 'cc', 'h', 'hpp']}
 Plug 'easymotion/vim-easymotion'
 Plug 'tpope/vim-surround'
 Plug 'gcmt/wildfire.vim', {'for': ['cpp', 'cc', 'vim', 'python', 'sh', 'h', 'hpp']}
 Plug 'solarnz/thrift.vim'
 Plug 'heavenshell/vim-pydocstring', {'for': ['python']}
+Plug 'fatih/vim-go'
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins', 'for':['python']}
 call plug#end()
@@ -25,6 +26,17 @@ call plug#end()
 let g:pydocstring_doq_path = "doq"
 nmap <silent> <C-_> <Plug>(pydocstring)
 au FileType python nnoremap <leader>cc :Pydocstring<cr>
+"vim-go
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_function_parameters = 1
+let g:go_highlight_variable_declarations = 1
+let g:go_highlight_variable_assignments = 1
+"let g:go_gopls_enabled = 0
 
 "colorscheme is like hybrid
 colorscheme hybrid-self

@@ -47,4 +47,5 @@ noremap <silent> <leader>gs :GscopeFind s <C-R><C-W><cr>
 " {\n}
 au FileType cpp inoremap {<CR> {}<ESC>i<ENTER><ESC>O
 au FileType c inoremap {<CR> {}<ESC>i<ENTER><ESC>O
+au FileType go inoremap {<CR> {}<ESC>i<ENTER><ESC>O
 au FileType sh inoremap {<CR> {}<ESC>i<ENTER><ESC>O
