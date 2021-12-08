@@ -53,6 +53,7 @@ let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>>'
 let g:ycm_max_diagnostics_to_display = 0
+let g:ycm_clangd_args=['--header-insertion=never']
 
 nnoremap <leader>d :YcmCompleter GoTo<cr>
 "let g:ycm_error_symbol = '✗'
