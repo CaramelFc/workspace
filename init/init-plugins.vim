@@ -20,7 +20,13 @@ Plug 'heavenshell/vim-pydocstring', {'for': ['python']}
 Plug 'fatih/vim-go'
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins', 'for':['python']}
+Plug 'f-person/git-blame.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'sindrets/diffview.nvim'
 call plug#end()
+
+"git blame
+let g:gitblame_enabled = 0
 
 "pydoc
 let g:pydocstring_doq_path = "doq"
