@@ -23,7 +23,13 @@ Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins', 'for':['python']}
 Plug 'f-person/git-blame.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'sindrets/diffview.nvim'
+Plug 'ellisonleao/glow.nvim'
+Plug 'pseewald/vim-anyfold', {'for': ['cpp', 'cc', 'h', 'hpp', 'python']}
 call plug#end()
+"anyfold
+au Filetype cpp,c,python AnyFoldActivate
+set foldlevel=99
+
 
 "git blame
 let g:gitblame_enabled = 0

@@ -21,6 +21,7 @@ set completeopt=menu,menuone
 set expandtab
 set splitright
 set backspace=indent,eol,start
+set clipboard+=unnamedplus
 
 
 
