@@ -118,21 +118,38 @@ install_neovim() {
         *) die "不支持的架构: $(uname -m)" ;;
     esac
 
-    local url tmp
-    url="$(gh_url "https://github.com/neovim/neovim/releases/download/$NVIM_VERSION/nvim-linux-$arch.tar.gz")"
+    # GitHub "最新版本资产" URL 是 releases/latest/download/...（自动重定向到最新 release）
+    # 锁定版本时用 releases/download/<tag>/...；0.9.x 的资产名为 nvim-linux64.tar.gz
+    local urls=()
+    if [ "$NVIM_VERSION" = "latest" ]; then
+        urls+=("https://github.com/neovim/neovim/releases/latest/download/nvim-linux-$arch.tar.gz")
+    else
+        urls+=("https://github.com/neovim/neovim/releases/download/$NVIM_VERSION/nvim-linux-$arch.tar.gz")
+        [ "$arch" = "x86_64" ] && urls+=("https://github.com/neovim/neovim/releases/download/$NVIM_VERSION/nvim-linux64.tar.gz")
+    fi
+
+    local tmp ok=""
     tmp="$(mktemp -t nvim.XXXXXX.tar.gz)"
-    log "下载 neovim ($NVIM_VERSION)"
-    curl -fL --retry 3 --connect-timeout 15 -o "$tmp" "$url"
+    for raw_url in "${urls[@]}"; do
+        log "下载 neovim ($NVIM_VERSION)"
+        if curl -fL --retry 3 --connect-timeout 15 -o "$tmp" "$(gh_url "$raw_url")"; then
+            ok=1
+            break
+        fi
+        warn "下载失败: $raw_url"
+    done
+    [ -n "$ok" ] || die "neovim 下载失败，可用 GITHUB_PROXY=... 或 NVIM_VERSION=vX.Y.Z 指定镜像/版本"
 
     if [ "$(id -u)" -eq 0 ]; then
         log "安装 neovim 到 /usr/local"
         tar xzf "$tmp" -C /usr/local --strip-components=1
     else
-        local opt_dir="$HOME/.local/opt/nvim-linux-$arch"
+        local opt_dir="$HOME/.local/opt/nvim"
         log "安装 neovim 到 \$HOME/.local"
         mkdir -p "$HOME/.local/opt" "$HOME/.local/bin"
         rm -rf "$opt_dir"
-        tar xzf "$tmp" -C "$HOME/.local/opt"
+        mkdir -p "$opt_dir"
+        tar xzf "$tmp" -C "$opt_dir" --strip-components=1
         ln -sfn "$opt_dir/bin/nvim" "$HOME/.local/bin/nvim"
         grep -q 'HOME/.local/bin' "$HOME/.env.zsh" 2>/dev/null || \
             echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.env.zsh"
