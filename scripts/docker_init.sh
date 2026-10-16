@@ -10,6 +10,8 @@
 #   USE_GITEE=1    oh-my-zsh 及 zsh 插件改用 gitee 镜像
 #   NVIM_VERSION   锁定 neovim 版本, 如 v0.10.4 (默认 latest)
 #   SKIP_PLUGINS=1 跳过 nvim 插件安装 (PlugInstall)
+#   CLAUDE_VERSION 锁定 Claude Code CLI 版本, 如 v2.1.301 (默认 latest)
+#   CLAUDE_FORCE=1 Claude CLI 已安装时强制重新下载
 
 set -euo pipefail
 
@@ -191,7 +193,114 @@ install_nvim_plugins() {
 }
 
 ###############################################################################
-# 6. 切换默认 shell（best effort）
+# 6. Claude Code CLI（GitHub release 原生二进制，不走 claude.ai 安装脚本）
+#    GITHUB_PROXY 指定 GitHub 加速前缀，如 https://gh-proxy.com/
+#    CLAUDE_VERSION 锁定版本（如 v2.1.301，默认 latest）
+#    CLAUDE_FORCE=1 已安装时强制重新下载
+###############################################################################
+install_claude_cli() {
+    if command -v claude >/dev/null 2>&1 && [ "${CLAUDE_FORCE:-0}" != "1" ]; then
+        info "claude CLI 已存在: $(claude --version 2>/dev/null)，跳过（CLAUDE_FORCE=1 可重装）"
+        return
+    fi
+
+    case "$(uname -m)" in
+        x86_64)  arch="x64" ;;
+        aarch64) arch="arm64" ;;
+        *) die "不支持的架构: $(uname -m)" ;;
+    esac
+    # Alpine(musl) 用 musl 构建，其余发行版用 gnu 构建
+    local libc=""
+    if command -v apk >/dev/null 2>&1 || ldd --version 2>&1 | grep -qi musl; then
+        libc="-musl"
+    fi
+    local asset="claude-linux-${arch}${libc}.tar.gz"
+
+    local tag base
+    tag="${CLAUDE_VERSION:-latest}"
+    if [ "$tag" = "latest" ]; then
+        base="https://github.com/anthropics/claude-code/releases/latest/download"
+    else
+        base="https://github.com/anthropics/claude-code/releases/download/$tag"
+    fi
+
+    local tmp sums want got
+    tmp="$(mktemp -t claude.XXXXXX.tar.gz)"
+    log "下载 Claude Code CLI ($tag/$asset)"
+    if ! curl -fL --retry 3 --connect-timeout 15 -o "$tmp" "$(gh_url "$base/$asset")"; then
+        rm -f "$tmp"
+        die "claude 下载失败，可尝试 GITHUB_PROXY=https://gh-proxy.com/ bash scripts/docker_init.sh"
+    fi
+
+    # 官方 SHASUMS256 校验；校验文件拉不下来仅告警不阻断
+    sums="$(mktemp -t claude-shasums.XXXXXX)"
+    if curl -fsL --connect-timeout 15 -o "$sums" "$(gh_url "$base/SHASUMS256.txt")"; then
+        want="$(awk -v a="$asset" '$2==a{print $1}' "$sums")"
+        got="$(sha256sum "$tmp" | awk '{print $1}')"
+        if [ -z "$want" ] || [ "$want" != "$got" ]; then
+            rm -f "$tmp" "$sums"
+            die "claude SHA256 校验失败（期望 $want，实际 $got），镜像内容可能被篡改"
+        fi
+    else
+        warn "SHASUMS256.txt 拉取失败，跳过完整性校验"
+    fi
+    rm -f "$sums"
+
+    if [ "$(id -u)" -eq 0 ]; then
+        log "安装 claude 到 /usr/local/bin"
+        tar xzf "$tmp" -C /usr/local/bin
+        chmod +x /usr/local/bin/claude
+    else
+        local opt_dir="$HOME/.local/opt/claude"
+        log "安装 claude 到 \$HOME/.local"
+        mkdir -p "$HOME/.local/opt" "$HOME/.local/bin"
+        rm -rf "$opt_dir"
+        mkdir -p "$opt_dir"
+        tar xzf "$tmp" -C "$opt_dir"
+        chmod +x "$opt_dir/claude"
+        ln -sfn "$opt_dir/claude" "$HOME/.local/bin/claude"
+        grep -q 'HOME/.local/bin' "$HOME/.env.zsh" 2>/dev/null || \
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.env.zsh"
+        export PATH="$HOME/.local/bin:$PATH"
+    fi
+    rm -f "$tmp"
+
+    if ! command -v claude >/dev/null 2>&1; then
+        die "claude 安装完成但不在 PATH 中，执行 export PATH=\"\$HOME/.local/bin:\$PATH\" 后重试"
+    fi
+    log "claude CLI: $(claude --version 2>&1)"
+}
+
+###############################################################################
+# 7. VSCode Claude 插件：自动批准（bypassPermissions）
+#    Machine 级设置，容器内所有 VSCode 窗口/新会话默认跳过权限确认
+###############################################################################
+config_vscode_claude() {
+    local settings_dir="$HOME/.vscode-server/data/Machine"
+    local settings_file="$settings_dir/settings.json"
+
+    if [ -f "$settings_file" ] && grep -q '"claudeCode.initialPermissionMode"' "$settings_file"; then
+        info "VSCode Claude 自动批准配置已存在，跳过"
+        return
+    fi
+
+    log "写入 VSCode Claude 插件 Machine 设置（bypassPermissions）"
+    mkdir -p "$settings_dir"
+    if [ -f "$settings_file" ]; then
+        warn "$settings_file 已存在但缺少相关配置，请手动合并:"
+        printf '  "claudeCode.allowDangerouslySkipPermissions": true,\n  "claudeCode.initialPermissionMode": "bypassPermissions"\n'
+        return
+    fi
+    cat > "$settings_file" <<'EOF'
+{
+  "claudeCode.allowDangerouslySkipPermissions": true,
+  "claudeCode.initialPermissionMode": "bypassPermissions"
+}
+EOF
+}
+
+###############################################################################
+# 8. 切换默认 shell（best effort）
 ###############################################################################
 set_default_shell() {
     local zsh_bin
@@ -210,6 +319,8 @@ main() {
     install_neovim
     link_configs
     install_nvim_plugins
+    install_claude_cli
+    config_vscode_claude
     set_default_shell
 
     cat <<EOF
@@ -218,6 +329,8 @@ $(printf '\033[1;32m')安装完成\033[0m
   zsh 配置:  ~/.zshrc          -> $REPO_DIR/env/.zshrc
   tmux 配置: ~/.tmux.conf      -> $REPO_DIR/env/.tmux.conf
   nvim 配置: ~/.config/nvim/init.vim -> $REPO_DIR/init.vim
+  claude:    $(command -v claude || echo '~/.local/bin/claude') ($(claude --version 2>/dev/null || echo 'Claude Code CLI'))
+  VSCode:    ~/.vscode-server/data/Machine/settings.json (Claude 自动批准)
 
   立即生效: exec zsh
   安装插件: nvim +PlugInstall
