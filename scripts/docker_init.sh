@@ -78,7 +78,11 @@ install_oh_my_zsh() {
     fi
 
     mkdir -p "$custom_dir"
-    for pair in "zsh-syntax-highlighting:$highlight_repo" "zsh-autosuggestions:$suggest_repo"; do
+    z_repo="$(gh_url https://github.com/agkozak/zsh-z.git)"
+    for pair in \
+        "zsh-syntax-highlighting:$highlight_repo" \
+        "zsh-autosuggestions:$suggest_repo" \
+        "zsh-z:$z_repo"; do
         name="${pair%%:*}"; repo="${pair#*:}"
         if [ ! -d "$custom_dir/$name" ]; then
             log "安装 zsh 插件 $name"

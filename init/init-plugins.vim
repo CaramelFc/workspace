@@ -18,7 +18,37 @@ Plug 'f-person/git-blame.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'sindrets/diffview.nvim'
 Plug 'pseewald/vim-anyfold', {'for': ['cpp', 'cc', 'h', 'hpp', 'python']}
+"轻量补全（路径/缓冲区词），替代 YCM，需要 neovim
+if has('nvim')
+	Plug 'hrsh7th/nvim-cmp'
+	Plug 'hrsh7th/cmp-path'
+	Plug 'hrsh7th/cmp-buffer'
+endif
 call plug#end()
+
+"补全配置：C-n/C-p 选择，C-y 确认，C-e 取消；输入 ./ / ~ 弹路径
+if has('nvim')
+	lua << EOF
+local ok, cmp = pcall(require, 'cmp')
+if ok then
+	vim.o.completeopt = 'menu,menuone,noselect'
+	cmp.setup({
+		mapping = cmp.mapping.preset.insert({
+			['<C-n>'] = cmp.mapping.select_next_item(),
+			['<C-p>'] = cmp.mapping.select_prev_item(),
+			['<C-y>'] = cmp.mapping.confirm({ select = true }),
+			['<C-e>'] = cmp.mapping.abort(),
+		}),
+		sources = cmp.config.sources({
+			{ name = 'path' },
+		}, {
+			{ name = 'buffer', keyword_length = 3 },
+		}),
+	})
+end
+EOF
+endif
+
 "anyfold
 au Filetype cpp,c,python AnyFoldActivate
 set foldlevel=99
